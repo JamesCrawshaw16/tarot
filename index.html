@@ -145,22 +145,45 @@
 .reversed {
   transform: rotate(180deg);
   filter: brightness(0.85) contrast(0.95);
+}#styleMenu {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 999;
+  text-align: left;
 }
-  #themeButton {
+
+#themeButton {
   background: none;
   border: none;
-  font-size: 24px;
-  cursor: pointer;
-  margin-bottom: 20px;
+  font-size: 16px;
   color: #c0a366;
-  transition: transform 0.2s ease;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 5px 10px;
 }
 
-#themeButton:hover {
-  transform: scale(1.2);
+#themeList {
+  display: none;
+  margin-top: 5px;
+  background: #1c1c1e;
+  border: 1px solid #c0a36655;
+  border-radius: 6px;
+  padding: 8px;
 }
 
+#themeList a {
+  display: block;
+  color: #c0a366;
+  text-decoration: none;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
 
+#themeList a:hover {
+  text-decoration: underline;
+}
   </style>
 </head>
 <body>
@@ -209,8 +232,11 @@
 
   <script>
       function goToThemes() {
-  // Placeholder: update with actual URLs once designs are ready
-  window.location.href = "themes.html";
+function toggleThemeMenu() {
+  const menu = document.getElementById("themeList");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
 }
     const tarotCards = [
   {
@@ -476,4 +502,5 @@ document.getElementById("closeHelp").onclick = function () {
   </script>
 </body>
 </html>
+
 
