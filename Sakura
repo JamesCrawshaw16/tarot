@@ -165,7 +165,13 @@
 </head>
 <body>
   <!-- Pick your style button (top-left corner) -->
-<button id="themeButton" onclick="goToThemes()" title="View other designs">Pick your style</button>
+<div id="styleMenu">
+  <button id="themeButton" onclick="toggleThemeMenu()">Pick your style ▾</button>
+  <div id="themeList">
+    <a href="https://jamescrawshaw16.github.io/tarot/">Classic</a>
+    <a href="https://jamescrawshaw16.github.io/tarot/Sakura">Sakura</a>
+  </div>
+</div>
 
 <!-- Popup Modal -->
 <div id="helpModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.85); color:#FFD9EC; z-index:999; font-family: 'Cinzel Decorative', serif; padding: 40px;">
@@ -203,7 +209,7 @@
   <script>
       function goToThemes() {
   // Placeholder: update with actual URLs once designs are ready
-  window.location.href = "themes.html";
+  window.location.href = "https://jamescrawshaw16.github.io/tarot/Sakura";
 }
     const tarotCards = [
   {
@@ -469,3 +475,4 @@ document.getElementById("closeHelp").onclick = function () {
   </script>
 </body>
 </html>
+
