@@ -146,11 +146,27 @@
   transform: rotate(180deg);
   filter: brightness(0.85) contrast(0.95);
 }
+  #themeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: #c0a366;
+  transition: transform 0.2s ease;
+}
+
+#themeButton:hover {
+  transform: scale(1.2);
+}
 
 
   </style>
 </head>
 <body>
+  <!-- Pick your style button (top-left corner) -->
+<button id="themeButton" onclick="goToThemes()" title="View other designs">Pick your style</button>
+
 <!-- Popup Modal -->
 <div id="helpModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.85); color:#c0a366; z-index:999; font-family: 'Cinzel Decorative', serif; padding: 40px;">
   <div style="max-width:600px; margin:auto; background:#111; padding:20px; border-radius:10px; border:1px solid #ffd70044; box-shadow:0 0 10px #ffd70033; position:relative;">
@@ -162,13 +178,16 @@
 </div>
  <div class="container">
 
+  <div id="userQuestionDisplay" style="display:none; margin-bottom: 20px; font-size: 1.2em; font-style: italic;"></div>
+
   <!-- Input section only -->
-  <div id="inputSection">
-    <h1>Ask the Tarot</h1>
-    <textarea id="userInput" placeholder="Enter your question or summary..."></textarea>
-    <br>
-    <button onclick="drawCards()">Draw Celtic Cross</button>
-  </div>
+ <div id="inputSection">
+  <h1>Ask the Tarot</h1>
+  <textarea id="userInput" placeholder="Enter your question or summary..."></textarea>
+  <br>
+  <button onclick="drawCards()">Draw Celtic Cross</button>
+</div>
+
 
   <!-- Output section: MOVE THESE OUTSIDE inputSection -->
   <div id="cardsContainer" class="cards-grid"></div>
@@ -182,6 +201,10 @@
   </div>
 
   <script>
+      function goToThemes() {
+  // Placeholder: update with actual URLs once designs are ready
+  window.location.href = "themes.html";
+}
     const tarotCards = [
   {
     name: "The Fool",
@@ -371,25 +394,32 @@
     }
 
     function drawCards() {
-  const userText = document.getElementById('userInput').value.toLowerCase();
+  const userText = document.getElementById('userInput').value.trim();
+  
+  // Show the question at the top
+  const questionDisplay = document.getElementById('userQuestionDisplay');
+  questionDisplay.innerText = `"${userText}"`;
+  questionDisplay.style.display = 'block';
+
+  const lowerText = userText.toLowerCase();
   const matchedCards = tarotCards.filter(card =>
-    card.keywords.some(keyword => userText.includes(keyword))
+    card.keywords.some(keyword => lowerText.includes(keyword))
   );
 
   const finalSelection = (matchedCards.length >= 10
     ? shuffle(matchedCards).slice(0, 10)
     : shuffle(tarotCards).slice(0, 10));
 
-finalSelection.forEach(card => {
-  card.reversed = Math.random() < 0.5; // 50% chance to be reversed
-});
+  finalSelection.forEach(card => {
+    card.reversed = Math.random() < 0.5;
+  });
 
-  // Hide input, show reset
   document.getElementById('inputSection').style.display = 'none';
   document.getElementById('resetContainer').style.display = 'block';
 
   displayCards(finalSelection);
 }
+
 
     function displayCards(cards) {
   const container = document.getElementById('cardsContainer');
@@ -439,4 +469,3 @@ document.getElementById("closeHelp").onclick = function () {
   </script>
 </body>
 </html>
-
