@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tarot Reader</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&family=Quicksand:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Sawarabi Mincho', serif;
+      background: #1C0F2A;
+      color: #1C0F2A;
+      padding: 20px;
+      text-align: center;
+        background-image: url('https://github.com/JamesCrawshaw16/tarot_images/blob/main/aj-McsNra2VRQQ-unsplash.jpg?raw=true');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-color: #db7093; /* fallback */
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #FFD9EC;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+      background: #FFD9EC;
+      color: #1C0F2A;
+      border: 1px solid #1C0F2A;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 30px;
+      font-size: 18px;
+      margin-bottom: 30px;
+      cursor: pointer;
+      background-color: #1C0F2A;
+      color: #FFD9EC;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .card {
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid #1C0F2A;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 0 15px #FFD9EC;
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #1C0F2A;
+      box-shadow: 0 0 8px #FFD9EC;
+    }
+
+    .card-position {
+      font-size: 0.9em;
+      font-weight: bold;
+      color: #FFD9EC;
+      margin: 8px 0;
+    }
+
+    .card-name {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .card-meaning {
+      font-size: 0.85em;
+      margin-top: 6px;
+      color: #FFD9EC;
+    }
+    #resetContainer button {
+  background-color: #1C0F2A;
+  color: #FFD9EC;
+  font-weight: bold;
+  padding: 10px 25px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#resetContainer button:hover {
+  transform: scale(1.05);
+}
+.card {
+  background: #1C0F2A;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #FFD9EC;
+  box-shadow: 0 0 8px #FFD9EC;
+  text-align: center;
+  position: relative;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 even columns */
+  gap: 20px;
+  justify-items: center;
+  margin-top: 20px;
+}
+.cards-grid .card:nth-child(9) {
+  grid-column: 2;
+}
+.cards-grid .card:nth-child(10) {
+  grid-column: 3;
+}
+
+
+.card.central {
+  grid-column: 1 / -1; /* span entire row */
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.reversed {
+  transform: rotate(180deg);
+  filter: brightness(0.85) contrast(0.95);
+}
+  #themeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: #1C0F2A;
+  transition: transform 0.2s ease;
+}
+
+#themeButton:hover {
+  transform: scale(1.2);
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- Pick your style button (top-left corner) -->
+<button id="themeButton" onclick="goToThemes()" title="View other designs">Pick your style</button>
+
+<!-- Popup Modal -->
+<div id="helpModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.85); color:#FFD9EC; z-index:999; font-family: 'Cinzel Decorative', serif; padding: 40px;">
+  <div style="max-width:600px; margin:auto; background:#1C0F2A; padding:20px; border-radius:10px; border:1px solid #FFD9EC; box-shadow:0 0 10px #FFD9EC; position:relative;">
+    <span id="closeHelp" style="position:absolute; top:10px; right:20px; cursor:pointer; font-size:22px;">✕</span>
+    <h2 style="margin-top:0;" id="helpTitle"></h2>
+    <p id="helpText"></p>
+  </div>
+</div>
+</div>
+ <div class="container">
+
+  <div id="userQuestionDisplay" style="display:none; margin-bottom: 20px; font-size: 1.2em; font-style: italic;"></div>
+
+  <!-- Input section only -->
+ <div id="inputSection">
+  <h1>Ask the Tarot</h1>
+  <textarea id="userInput" placeholder="Enter your question or summary..."></textarea>
+  <br>
+  <button onclick="drawCards()">Draw Celtic Cross</button>
+</div>
+
+
+  <!-- Output section: MOVE THESE OUTSIDE inputSection -->
+  <div id="cardsContainer" class="cards-grid"></div>
+
+  <div id="resetContainer" style="display:none; margin-top: 30px;">
+    <button onclick="location.reload()">Ask another question</button>
+  </div>
+
+</div>
+
+  </div>
+
+  <script>
+      function goToThemes() {
+  // Placeholder: update with actual URLs once designs are ready
+  window.location.href = "themes.html";
+}
+    const tarotCards = [
+  {
+    name: "The Fool",
+    keywords: ["new", "start", "journey", "beginning"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1753_Japanese_Style_Fool_Card_gen_01k1nyh2y4epp8wg22e8p7r7v1.png?raw=true",
+    meaning: "Trust the journey ahead and step boldly into the unknown. Let curiosity guide you.",
+    reversedMeaning: "Stop and assess before leaping — impulsive choices may lead you astray right now."
+  },
+  {
+    name: "The Magician",
+    keywords: ["manifestation", "will", "skills", "action"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1800_Japanese_Tarot_Magician_gen_01k1nyygw4e4za1yypymh5ycef.png?raw=true",
+    meaning: "Use your skills and resources to shape your reality. What you focus on becomes real.",
+    reversedMeaning: "Avoid manipulating outcomes — align your actions with truth, not ego."
+  },
+  {
+    name: "The High Priestess",
+    keywords: ["intuition", "mystery", "inner voice"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1846_Japanese_High_Priestess_Tarot_gen_01k1p1kd3yf8erdc65hn809nhp.png?raw=true",
+    meaning: "Tune in to subtle truths. The answers you seek lie beneath the surface — trust your intuition.",
+    reversedMeaning: "Stop ignoring your gut — reconnect with your inner wisdom before moving ahead."
+  },
+  {
+    name: "The Empress",
+    keywords: ["nurture", "abundance", "creativity"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1855_Japanese_Empress_Tarot_gen_01k1p2467mfjnsv54k1wrtwp0n.png?raw=true",
+    meaning: "Let creativity flourish. Tend to what you’ve planted — abundance will follow.",
+    reversedMeaning: "Don’t neglect your needs — refill your own well before pouring into others."
+  },
+  {
+    name: "The Emperor",
+    keywords: ["structure", "authority", "stability"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1901_Japanese_Fool_Card_gen_01k1p2eqk3e839swgxsf4vj7t5.png?raw=true",
+    meaning: "Take control with confidence. Create order where there is chaos — lead with clarity.",
+    reversedMeaning: "Loosen rigid control — lead with flexibility rather than force."
+  },
+  {
+    name: "The Hierophant",
+    keywords: ["tradition", "belief", "learning"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1906_Japanese_Heirophant_Tarot_gen_01k1p2pygcf19bpyq3n7ve28f6.png?raw=true",
+    meaning: "Seek guidance in structure or tradition. Learn from those who walked before you.",
+    reversedMeaning: "Break away from outdated systems — trust your path even if it’s unconventional."
+  },
+  {
+    name: "The Lovers",
+    keywords: ["choice", "union", "alignment"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1929_Japanese_Tarot_Journey_gen_01k1p42d8reajbgj4gyqpr06jk.png?raw=true",
+    meaning: "Make choices from the heart. Align your actions with your deeper values.",
+    reversedMeaning: "Re-examine your commitments — are your choices aligned with your values?"
+  },
+  {
+    name: "The Chariot",
+    keywords: ["willpower", "victory", "determination"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1933_Japanese_Style_Chariot_Card_gen_01k1p491bmezqvn1ntq6y70yf5.png?raw=true",
+    meaning: "Move forward with purpose. Stay focused and you will overcome obstacles.",
+    reversedMeaning: "Slow down — pushing too hard without clarity may derail your momentum."
+  },
+  {
+    name: "Strength",
+    keywords: ["resilience", "calm", "inner power"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1937_Japanese_Tarot_Strength_gen_01k1p4ghj0fanrsd8aw9aygspq.png?raw=true",
+    meaning: "Approach challenges with patience and courage. Gentle strength prevails.",
+    reversedMeaning: "Don’t let fear overrule reason — call on your calm and inner resilience."
+  },
+  {
+    name: "The Hermit",
+    keywords: ["reflection", "solitude", "wisdom"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1941_Japanese_Tarot_Hermit_gen_01k1p4rfhcffnaff1yfvvtzgjf.png?raw=true",
+    meaning: "Take time for deep reflection. Your inner light will show you the way.",
+    reversedMeaning: "Don’t isolate too long — it’s time to bring your insights into the world."
+  },
+  {
+    name: "Wheel of Fortune",
+    keywords: ["fate", "cycles", "turning point"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_1949_Japanese_Fool's_Journey_gen_01k1p55xnqfxfa3kphpkgwpqt2.png?raw=true",
+    meaning: "Embrace the turning of fate. Let go of control — the wheel is always turning.",
+    reversedMeaning: "Release your resistance to change — cycles continue with or without your consent."
+  },
+  {
+    name: "Justice",
+    keywords: ["truth", "accountability", "fairness"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2011_Samurai_Justice_Card_gen_01k1p6eq9ef31rp0y17djhr9ym.png?raw=true",
+    meaning: "Act with honesty and integrity. What is fair will ultimately prevail.",
+    reversedMeaning: "Reconsider the story you’re telling — is it true, and is it fair to all involved?"
+  },
+  {
+    name: "The Hanged Man",
+    keywords: ["pause", "sacrifice", "perspective"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2016_Japanese_Tarot_Transformation_gen_01k1p6rz63fptszp6bd6v3kp61.png?raw=true",
+    meaning: "Pause and see things differently. Let go of the need for control — clarity comes in stillness.",
+    reversedMeaning: "You’re resisting the pause — surrender control to allow clarity to surface."
+  },
+  {
+    name: "Death",
+    keywords: ["ending", "transformation", "release"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2021_Japanese_Death_Tarot_gen_01k1p70azcez1s1yn9d0xjd4r3.png?raw=true",
+    meaning: "Release the old to make space for the new. Transformation begins with surrender.",
+    reversedMeaning: "Clinging to the past is blocking growth — let the transformation happen."
+  },
+  {
+    name: "Temperance",
+    keywords: ["balance", "moderation", "harmony"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2026_Japanese_Tarot_Journey_gen_01k1p7a4v7e6c850k6r2b2ycnk.png?raw=true",
+    meaning: "Seek the middle path. Blending energies gently will bring healing and peace.",
+    reversedMeaning: "Address imbalance — are you overdoing something or neglecting harmony?"
+  },
+  {
+    name: "The Devil",
+    keywords: ["bondage", "temptation", "shadow"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2031_Oni_Tarot_Transformation_gen_01k1p7jqe6fdt9qkthw2f4s01h.png?raw=true",
+    meaning: "Free yourself from toxic patterns. Awareness is the first step toward liberation.",
+    reversedMeaning: "Recognize what’s holding you — awareness is your key to breaking free."
+  },
+  {
+    name: "The Tower",
+    keywords: ["upheaval", "awakening", "destruction"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2035_Japanese_Tarot_Tower_gen_01k1p7v4z0fk4vpw2r3tfg2wq4.png?raw=true",
+    meaning: "Let the old fall away. Use disruption as a catalyst for awakening and truth.",
+    reversedMeaning: "Don't resist the fall — clinging to old structures will only intensify the collapse."
+  },
+  {
+    name: "The Star",
+    keywords: ["hope", "healing", "renewal"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250805_1631_Japanese%20Star%20Tarot_simple_compose_01k1xdmbsqfwsvhjh8hfczr6fh.png?raw=true",
+    meaning: "Have faith in the bigger picture. Healing energy surrounds you — stay open.",
+    reversedMeaning: "Reconnect with hope — don’t allow fear to cloud your healing process."
+  },
+  {
+    name: "The Moon",
+    keywords: ["intuition", "illusion", "dreams"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2038_Japanese_Moon_Tarot_gen_01k1p80ndje1sb7abxq3ftepqx.png?raw=true",
+    meaning: "Navigate by instinct, not logic. The path ahead may be hidden, but not lost.",
+    reversedMeaning: "Face your fears and uncertainty — illusions dissolve when brought into light."
+  },
+  {
+    name: "The Sun",
+    keywords: ["joy", "success", "clarity"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2046_Japanese_The_Fool_Card_gen_01k1p8es76ets9j4pfrhxph9yq.png?raw=true",
+    meaning: "Let your light shine without shame. Clarity and joy are yours to claim.",
+    reversedMeaning: "Beware of false brightness — seek genuine clarity, not distraction."
+  },
+  {
+    name: "Judgement",
+    keywords: ["truth", "awakening", "rebirth"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2050_Japanese_Tarot_Journey_gen_01k1p8nqqcetnvrgff1g4856hw.png?raw=true",
+    meaning: "Rise above the past and answer the call. Now is a time for clarity and renewal.",
+    reversedMeaning: "Stop ignoring the call — reflection and accountability are overdue."
+  },
+  {
+    name: "The World",
+    keywords: ["completion", "fulfillment", "wholeness"],
+    image: "https://github.com/JamesCrawshaw16/tarot_images/blob/main/20250802_2053_Japanese_Tarot_Wanderer_gen_01k1p8vx3pevn8jgx5caqjebc3.png?raw=true",
+    meaning: "A cycle comes full circle. Celebrate your progress and prepare for what’s next.",
+    reversedMeaning: "Tie up loose ends — you're close to closure but not quite there yet."
+  }
+];
+
+
+    const celticCrossPositions = [
+      "1. Present Situation",
+      "2. Challenge / Crossing Card",
+      "3. Past Influences",
+      "4. Future Possibilities",
+      "5. Conscious Goal",
+      "6. Subconscious Influences",
+      "7. Self / Attitude",
+      "8. Environment / External Influence",
+      "9. Hopes and Fears",
+      "10. Likely Outcome"
+    ];
+    const celticCrossExplanations = [
+  "This card represents your current position or state — where you are in this moment.",
+  "This card reflects the challenge, block, or lesson directly crossing your path.",
+  "The root of the issue — influences from your past that brought you here.",
+  "What may come soon if things continue as they are — a near future possibility.",
+  "What you are consciously striving for, or your stated goals and motivations.",
+  "Your hidden drives, fears, or underlying emotional patterns beneath the surface.",
+  "How you see yourself in the situation — your identity, role, or attitude.",
+  "Forces or people around you — the external environment shaping your path.",
+  "Your hopes or fears — often both are tied to the same deep emotion or outcome.",
+  "The most likely result if the current energy and decisions remain unchanged."
+];
+
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function drawCards() {
+  const userText = document.getElementById('userInput').value.trim();
+  
+  // Show the question at the top
+  const questionDisplay = document.getElementById('userQuestionDisplay');
+  questionDisplay.innerText = `"${userText}"`;
+  questionDisplay.style.display = 'block';
+
+  const lowerText = userText.toLowerCase();
+  const matchedCards = tarotCards.filter(card =>
+    card.keywords.some(keyword => lowerText.includes(keyword))
+  );
+
+  const finalSelection = (matchedCards.length >= 10
+    ? shuffle(matchedCards).slice(0, 10)
+    : shuffle(tarotCards).slice(0, 10));
+
+  finalSelection.forEach(card => {
+    card.reversed = Math.random() < 0.5;
+  });
+
+  document.getElementById('inputSection').style.display = 'none';
+  document.getElementById('resetContainer').style.display = 'block';
+
+  displayCards(finalSelection);
+}
+
+
+    function displayCards(cards) {
+  const container = document.getElementById('cardsContainer');
+  container.innerHTML = '';
+
+  cards.forEach((card, index) => {
+    const cardEl = document.createElement('div');
+    cardEl.classList.add('card');
+    if (index === 8 || index === 9) cardEl.classList.add('central'); // Cards 9 & 10
+
+    cardEl.innerHTML = `
+      <div class="card-position">
+        ${celticCrossPositions[index]} 
+        <button style="background:none;border:none;color:#c0a366;font-weight:bold;cursor:pointer;" onclick="showHelp(${index})">?</button>
+      </div>
+      <img src="${card.image}" alt="${card.name}" class="${card.reversed ? 'reversed' : ''}" />
+      <div class="card-name">${card.name}</div>
+     <div class="card-meaning">
+  ${card.reversed
+    ? `<em>Reversed:</em> ${card.reversedMeaning || "This energy may be blocked, delayed, or turned inward. Consider how this card's traditional meaning is distorted or resisted."}`
+    : card.meaning}
+</div>
+
+    `;
+    container.appendChild(cardEl);
+
+    // Add animation class
+    requestAnimationFrame(() => {
+      cardEl.style.opacity = 0;
+      cardEl.style.transform = "translateY(20px)";
+      setTimeout(() => {
+        cardEl.style.opacity = 1;
+        cardEl.style.transform = "translateY(0)";
+      }, index * 100); // staggered animation
+    });
+  });
+}
+  function showHelp(index) {
+  document.getElementById("helpTitle").innerText = celticCrossPositions[index];
+  document.getElementById("helpText").innerText = celticCrossExplanations[index];
+  document.getElementById("helpModal").style.display = "block";
+}
+
+document.getElementById("closeHelp").onclick = function () {
+  document.getElementById("helpModal").style.display = "none";
+};
+  </script>
+</body>
+</html>
