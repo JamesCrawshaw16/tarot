@@ -186,7 +186,7 @@
   <button id="themeButton" onclick="toggleThemeMenu()">Pick your style ▾</button>
   <div id="themeList">
     <a href="https://jamescrawshaw16.github.io/tarot/">Classic</a>
-    <a href="https://jamescrawshaw16.github.io/tarot/Sakura.html/">Sakura</a>
+    <a href="https://jamescrawshaw16.github.io/tarot/Sakura/">Sakura</a>
   </div>
 </div>
 
@@ -224,9 +224,9 @@
   </div>
 
   <script>
-      function goToThemes() {
-  // Placeholder: update with actual URLs once designs are ready
-  window.location.href = "https://jamescrawshaw16.github.io/tarot/Sakura";
+     function toggleThemeMenu() {
+  const menu = document.getElementById("themeList");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
     const tarotCards = [
   {
